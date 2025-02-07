@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
-</head>
-<body>
+<div>
     <h1>Lista de Productos</h1>
     <ul>
         {{#each products}}
             <li>{{this.name}} - ${{this.price}} (Stock: {{this.stock}})</li>
         {{/each}}
     </ul>
-</body>
-</html>
+</div>

@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/cart.router.js";
-import ProductManager from "./models/productManager.js";
+import ProductManager from './models/productsManager.js';
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -26,8 +26,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
 // Rutas
-app.use("/", productRouter);
 app.use("/api/carts", cartRouter);
+app.use('/products', productRouter);
+
 
 // Ruta para vista de productos con HTTP
 app.get("/products", (req, res) => {

@@ -1,11 +1,11 @@
 import { Router } from "express";
-import ProductManager from '../models/productManager.js';
+import ProductManager from '../models/productsManager.js';
 const router = Router();
 
 
 router.get('/', (req, res) => {
   const products = ProductManager.getProducts();
-  res.json(products); 
+  res.render('index', {products});
 });
 
 router.get('/:id', (req, res) => {
