@@ -8,6 +8,11 @@ router.get('/', (req, res) => {
   res.render('index', {products});
 });
 
+router.get('/realtimeproducts', (req, res) => {
+  res.render('realTimeProducts', { products: ProductManager.getProducts() });
+});
+
+
 router.get('/:id', (req, res) => {
   const productId = req.params.id;
   const product = ProductManager.getProductId(productId);
