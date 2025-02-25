@@ -1,4 +1,3 @@
-// app.js
 import express from "express";
 import { createServer } from "http";
 import handlebars from 'express-handlebars';
@@ -23,10 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
-// Configurar Handlebars
 app.engine("handlebars", handlebars.engine({
   runtimeOptions: {
-    allowProtoPropertiesByDefault: true,  // Permite acceso a propiedades en Handlebars
+    allowProtoPropertiesByDefault: true,  
     allowProtoMethodsByDefault: true
   }
 }));

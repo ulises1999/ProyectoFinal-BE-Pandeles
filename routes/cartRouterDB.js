@@ -10,14 +10,11 @@ router.get("/", async (req, res) => {
     let cart = await Cart.findOne().populate("products.product");
 
     if (!cart) {
-      console.log("No cart found, creating a new one...");
       cart = new Cart({ products: [] });
       await cart.save();
-      console.log("New cart created:", cart);
+      // console.log("New cart created:", cart);
     }
-
-    console.log("Cart data:", cart);
-    res.render("cart", { cart });
+    res.render("cart", { cart: cart.toObject() });
   } catch (error) {
     console.error("Error fetching the cart:", error.message);
     res.render("error", { error: `Error fetching the cart: ${error.message}` });
@@ -34,10 +31,10 @@ router.post("/add/:productId", async (req, res) => {
       cart = new Cart({ products: [] });
     }
 
-    const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
+    const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
 
-    if (existingProductIndex > -1) {
-      cart.products[existingProductIndex].quantity += 1;
+    if (productIndex !== -1) {
+      cart.products[productIndex].quantity += 1;
     } else {
       cart.products.push({ product: productId, quantity: 1 });
     }
@@ -57,7 +54,7 @@ router.post("/remove/:productId", async (req, res) => {
     let cart = await Cart.findOne();
 
     if (!cart) {
-      return res.render("error", { error: "Cart not found" });
+      return res.redirect("/cart");
     }
 
     cart.products = cart.products.filter(p => p.product.toString() !== productId);

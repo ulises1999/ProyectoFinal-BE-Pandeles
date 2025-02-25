@@ -1,17 +1,39 @@
 <h1>Product List</h1>
-{{#each products}}
-<ul>
-    <li>
-        <h2>{{this.name}}</h2>
-        <p>Price: ${{this.price}}</p>
-        <p>Description: {{this.description}}</p>
-        <a href="/products/{{this._id}}">View Details</a>
-        <form action="/cart/add/{{this._id}}" method="POST">
-            <button type="submit">Add to Cart</button>
-        </form>
-    </li>
-</ul>
-{{/each}}
 
-<!-- Botón para volver al inicio -->
+<form action="/products" method="GET">
+    <label for="category">Categoría:</label>
+    <input type="text" name="category" id="category">
+
+    <label for="availability">Disponible:</label>
+    <select name="availability" id="availability">
+        <option value="">Todos</option>
+        <option value="true">Disponible</option>
+        <option value="false">No disponible</option>
+    </select>
+
+    <label for="sort">Ordenar por precio:</label>
+    <select name="sort" id="sort">
+        <option value="">Sin orden</option>
+        <option value="asc">Menor a Mayor</option>
+        <option value="desc">Mayor a Menor</option>
+    </select>
+
+    <button type="submit">Buscar</button>
+</form>
+
+<ul>
+    {{#each products}}
+        <li>
+            <strong>{{this.name}}</strong> - ${{this.price}} - {{this.category}} - 
+            {{#if this.availability}}Disponible{{else}}No Disponible{{/if}} -
+            Stock: {{this.stock}}
+            <br>
+            <a href="/products/{{this._id}}">Ver detalles</a> |
+            <form action="/cart/add/{{this._id}}" method="POST" style="display:inline;">
+                <button type="submit">Agregar al carrito</button>
+            </form>
+        </li>
+    {{/each}}
+</ul>
+
 <a href="/" class="button">Volver al inicio</a>

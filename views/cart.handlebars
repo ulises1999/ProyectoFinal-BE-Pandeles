@@ -1,14 +1,14 @@
-// views/cart.handlebars
-<h1>Your Cart</h1>
-<a href="/">Back to Home</a>
+
+<h1>Tu carrito</h1>
+<a href="/">Inicio</a>
 <ul>
     {{#each cart.products}}
     <li>
         <h2>{{this.product.name}}</h2>
-        <p>Price: ${{this.product.price}}</p>
-        <p>Quantity: {{this.quantity}}</p>
+        <p>Precio: ${{this.product.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
         <form action="/cart/remove/{{this.product._id}}" method="POST">
-            <button type="submit">Remove</button>
+            <button type="submit">Eliminar</button>
         </form>
     </li>
     {{/each}}
