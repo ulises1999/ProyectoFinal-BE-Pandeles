@@ -1,18 +1,17 @@
 import express from "express";
 import { createServer } from "http";
-import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import productRouter from "./routes/products.router.js";
 import ProductManager from "./models/productsManager.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import methodOverride from 'method-override';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,34 +22,17 @@ app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "/views"));
 
+app.use(methodOverride('_method'));
+
 // Rutas
-app.use("/products", productRouter);
+app.use("/apiproducts", productRouter);
+app.use("/products",productRouterDB);
 
 // Ruta para vista de productos en tiempo real
 app.get("/products/realtimeproducts", (req, res) => {
   const products = ProductManager.getProducts();
   console.log("cargando datos en tiempo real")
   res.render("realTimeProducts", { products });
-});
-
-// Configuración de WebSockets
-io.on("connection", (socket) => {
-  console.log("Cliente conectado");
-
-  // Enviar productos actuales al conectar
-  socket.emit("updateProducts", ProductManager.getProducts());
-
-  // Agregar nuevo producto
-  socket.on("addProduct", (newProduct) => {
-    ProductManager.addProduct(newProduct);
-    io.emit("updateProducts", ProductManager.getProducts());
-  });
-
-  // Eliminar producto
-  socket.on("deleteProduct", (id) => {
-    ProductManager.deleteProduct(id);
-    io.emit("updateProducts", ProductManager.getProducts());
-  });
 });
 
 server.listen(8080, () => {
