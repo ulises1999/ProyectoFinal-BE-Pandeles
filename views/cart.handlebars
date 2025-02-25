@@ -1,0 +1,17 @@
+<h1>Your Cart</h1>
+
+<ul>
+    {{#each cart.products}}
+    <li>
+        <h2>{{this.product.name}}</h2>
+        <p>Price: ${{this.product.price}}</p>
+        <p>Quantity: {{this.quantity}}</p>
+        <form action="/cart/{{../cart._id}}/products/{{this.product._id}}/delete" method="POST">
+            <button type="submit">Remove</button>
+        </form>
+    </li>
+    {{/each}}
+</ul>
+
+<!-- Botón para volver al inicio -->
+<a href="/" class="button">Volver al inicio</a>

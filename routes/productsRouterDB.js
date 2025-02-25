@@ -4,16 +4,23 @@ import ProductModel from '../models/productModel.js';
 
 const router = Router();
 router.post('/', async (req, res) => {
-    try{
-        const newProduct = new ProductModel(req.body);
-        console.log('Info del body: ', req.body);
+    try {
+        // Validación extra para asegurarse de que todos los campos existen
+        const { name, price, stock, description } = req.body;
+        if (!name || !price || !stock || !description) {
+            throw new Error("All fields are required");
+        }
+
+        const newProduct = new ProductModel({ name, price, stock, description });
         await newProduct.save();
 
-        res.render('products', {product: newProduct.toObject()}); 
-    }catch(error){
-        return res.render('error', {error: "Error al insertar el producto"});
+        res.render('product', { product: newProduct.toObject() });
+    } catch (error) {
+        console.error('Error agregando producto:', error);
+        return res.render('error', { error: `Error agregando producto: ${error.message}` });
     }
-})
+});
+
 
 router.get('/', async (req, res) => {
     try{

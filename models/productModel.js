@@ -8,7 +8,7 @@ const productSchema = new Schema({ //Definimos el esquema para producto
     price: {type: Number, required: true},
     description: {type: String, required: true}
 })
-
+productSchema.plugin(mongoosePaginate);
 const ProductModel = mongoose.model(productCollection, productSchema);
 
 export default ProductModel;

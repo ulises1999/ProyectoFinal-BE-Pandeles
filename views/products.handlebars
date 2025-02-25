@@ -10,6 +10,12 @@
             <input type="hidden" name="_method" value="DELETE">
             <button class="button-error" type="submit">Eliminar</button>
         </form>
+        <form action="/cart/{{cartId}}/products/{{this._id}}" method="POST">
+            <button type="submit">Add to Cart</button>
+        </form>
     </li>
 </ul>
 {{/each}}
+
+<!-- Botón para volver al inicio -->
+<a href="/" class="button">Volver al inicio</a>
