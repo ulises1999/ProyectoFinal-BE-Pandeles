@@ -1,83 +1,73 @@
-import { Router } from 'express';
-import CartModel from '../models/cartModel.js';
-import ProductModel from '../models/productModel.js';
+import express from "express";
+import Cart from "../models/cartModel.js";
+import Product from "../models/productModel.js";
 
-const router = Router();
+const router = express.Router();
 
-// 🔹 Crear un nuevo carrito y redirigir a su vista
-router.post('/', async (req, res) => {
-    try {
-        const newCart = new CartModel({ products: [] });
-        await newCart.save();
-        res.redirect(`/cart/${newCart._id}`);
-    } catch (error) {
-        console.error('Error creating cart:', error);
-        res.render('error', { message: 'Error creating cart' });
+// Obtener el carrito (si no existe, se crea uno nuevo)
+router.get("/", async (req, res) => {
+  try {
+    let cart = await Cart.findOne().populate("products.product");
+
+    if (!cart) {
+      console.log("No cart found, creating a new one...");
+      cart = new Cart({ products: [] });
+      await cart.save();
+      console.log("New cart created:", cart);
     }
+
+    console.log("Cart data:", cart);
+    res.render("cart", { cart });
+  } catch (error) {
+    console.error("Error fetching the cart:", error.message);
+    res.render("error", { error: `Error fetching the cart: ${error.message}` });
+  }
 });
 
-// 🔹 Agregar un producto al carrito y renderizarlo actualizado
-router.post('/:cartId/products/:productId', async (req, res) => {
-    try {
-        const { cartId, productId } = req.params;
-        const cart = await CartModel.findById(cartId);
-        const product = await ProductModel.findById(productId);
+// Agregar producto al carrito
+router.post("/add/:productId", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    let cart = await Cart.findOne();
 
-        if (!cart || !product) {
-            return res.render('error', { message: 'Cart or product not found' });
-        }
-
-        const productIndex = cart.products.findIndex(p => p.product.equals(productId));
-
-        if (productIndex > -1) {
-            cart.products[productIndex].quantity += 1;
-        } else {
-            cart.products.push({ product: productId, quantity: 1 });
-        }
-
-        await cart.save();
-        res.redirect(`/cart/${cartId}`); // Redirige al carrito actualizado
-    } catch (error) {
-        console.error('Error adding product to cart:', error);
-        res.render('error', { message: 'Error adding product to cart' });
+    if (!cart) {
+      cart = new Cart({ products: [] });
     }
+
+    const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
+
+    if (existingProductIndex > -1) {
+      cart.products[existingProductIndex].quantity += 1;
+    } else {
+      cart.products.push({ product: productId, quantity: 1 });
+    }
+
+    await cart.save();
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error adding product to cart:", error.message);
+    res.render("error", { error: `Error adding product to cart: ${error.message}` });
+  }
 });
 
-// 🔹 Eliminar un producto del carrito y renderizarlo actualizado
-router.post('/:cartId/products/:productId/delete', async (req, res) => {
-    try {
-        const { cartId, productId } = req.params;
-        const cart = await CartModel.findById(cartId);
+// Eliminar producto del carrito
+router.post("/remove/:productId", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    let cart = await Cart.findOne();
 
-        if (!cart) {
-            return res.render('error', { message: 'Cart not found' });
-        }
-
-        cart.products = cart.products.filter(p => !p.product.equals(productId));
-
-        await cart.save();
-        res.redirect(`/cart/${cartId}`);
-    } catch (error) {
-        console.error('Error removing product from cart:', error);
-        res.render('error', { message: 'Error removing product from cart' });
+    if (!cart) {
+      return res.render("error", { error: "Cart not found" });
     }
-});
 
-// 🔹 Obtener un carrito y mostrarlo en su vista
-router.get('/:cartId', async (req, res) => {
-    try {
-        const { cartId } = req.params;
-        const cart = await CartModel.findById(cartId);
+    cart.products = cart.products.filter(p => p.product.toString() !== productId);
+    await cart.save();
 
-        if (!cart) {
-            return res.render('error', { message: 'Cart not found' });
-        }
-
-        res.render('cart', { cart: cart.toObject() });
-    } catch (error) {
-        console.error('Error fetching cart:', error);
-        res.render('error', { message: 'Error fetching cart' });
-    }
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error removing product from cart:", error.message);
+    res.render("error", { error: `Error removing product from cart: ${error.message}` });
+  }
 });
 
 export default router;

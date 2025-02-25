@@ -1,16 +1,12 @@
-<h1>Lista de productos</h1>
+<h1>Product List</h1>
 {{#each products}}
 <ul>
     <li>
         <h2>{{this.name}}</h2>
-        <p>Precio: ${{this.price}}</p>
-        <p>Descripción: {{this.description}}</p>
-        <a href="/products/{{this._id}}">Ver detalle</a>
-        <form action="/products/{{this._id}}?_method=DELETE" method="POST">
-            <input type="hidden" name="_method" value="DELETE">
-            <button class="button-error" type="submit">Eliminar</button>
-        </form>
-        <form action="/cart/{{cartId}}/products/{{this._id}}" method="POST">
+        <p>Price: ${{this.price}}</p>
+        <p>Description: {{this.description}}</p>
+        <a href="/products/{{this._id}}">View Details</a>
+        <form action="/cart/add/{{this._id}}" method="POST">
             <button type="submit">Add to Cart</button>
         </form>
     </li>
