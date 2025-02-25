@@ -1,16 +1,17 @@
 import { Router } from 'express';
-import ProductModel from '../models/product.model.js';
+import ProductModel from '../models/productModel.js';
 
 
 const router = Router();
-
+console.log('aca mori')
 router.post('/', async (req, res) => {
     try{
         const newProduct = new ProductModel(req.body);
         console.log('Info del body: ', req.body);
         await newProduct.save();
 
-        res.render('product', {product: newProduct.toObject()});
+        res.render('products', {product: newProduct.toObject()}); 
+                                                                                            // aca rompe
     }catch(error){
         return res.render('error', {error: "Error al insertar el producto"});
     }
@@ -22,6 +23,7 @@ router.get('/', async (req, res) => {
         
         res.render('products', {products: products.map( product => product.toObject())});
     }catch(error){
+                                                                                                // tambien cae en el catch
         return res.render('error', {error:"Error al obtener productos"});
     }
 })

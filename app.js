@@ -1,11 +1,12 @@
 import express from "express";
 import { createServer } from "http";
 import { engine } from "express-handlebars";
-import productRouter from "./routes/products.router.js";
-import ProductManager from "./models/productsManager.js";
+import ProductManager from "./models/productModel.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import methodOverride from 'method-override';
+import productRouterDB from './routes/productsRouterDB.js'
+import viewsRouter from './routes/viewsRouterDB.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,8 +26,14 @@ app.set("views", path.join(__dirname, "/views"));
 app.use(methodOverride('_method'));
 
 // Rutas
-app.use("/apiproducts", productRouter);
-app.use("/products",productRouterDB);
+app.use('/', viewsRouter);
+app.use('/products', productRouterDB)
+
+// ruta para volver al inicio
+app.get('/inicio', (req, res) => {
+  res.render('index');  
+});
+
 
 // Ruta para vista de productos en tiempo real
 app.get("/products/realtimeproducts", (req, res) => {

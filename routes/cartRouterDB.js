@@ -1,7 +1,7 @@
 // routes/cartDB.router.js
 import { Router } from 'express';
-import CartModel from '../models/cart.model.js';
-import ProductModel from '../models/product.model.js';
+import CartModel from '../models/cartModel.js';
+import ProductModel from '../models/productModel.js';
 
 const router = Router();
 
