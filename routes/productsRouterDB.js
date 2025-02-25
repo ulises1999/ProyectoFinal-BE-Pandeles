@@ -3,7 +3,6 @@ import ProductModel from '../models/productModel.js';
 
 
 const router = Router();
-console.log('aca mori')
 router.post('/', async (req, res) => {
     try{
         const newProduct = new ProductModel(req.body);
@@ -11,7 +10,6 @@ router.post('/', async (req, res) => {
         await newProduct.save();
 
         res.render('products', {product: newProduct.toObject()}); 
-                                                                                            // aca rompe
     }catch(error){
         return res.render('error', {error: "Error al insertar el producto"});
     }
@@ -20,14 +18,18 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try{
         const products = await ProductModel.find();
-        
-        res.render('products', {products: products.map( product => product.toObject())});
+        let pageActual = req.query.page;
+        let limitActual = req.query.limit;
+        let infoPaginate = await ProductModel.paginate(
+            { limit: limitActual, page: pageActual});
+        console.log(infoPaginate);
+        let productObject = infoPaginate.docs.map( doc => doc.toObject());
+        res.render('products', {products: products.map( product => product.toObject()), info: infoPaginate, productObject});
+
     }catch(error){
-                                                                                                // tambien cae en el catch
         return res.render('error', {error:"Error al obtener productos"});
     }
 })
-
 
 router.get('/:id', async (req, res) => {
     try{

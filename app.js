@@ -1,15 +1,18 @@
 import express from "express";
 import { createServer } from "http";
-import { engine } from "express-handlebars";
-import ProductManager from "./models/productModel.js";
+import handlebars from 'express-handlebars';
+import { dirname, } from 'path';
 import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
+import productsRouterDB from './routes/productsRouterDB.js';
+import viewsRouterDB from './routes/viewsRouterDB.js';
+import dotenv from "dotenv";
 import methodOverride from 'method-override';
-import productRouterDB from './routes/productsRouterDB.js'
-import viewsRouter from './routes/viewsRouterDB.js'
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 const app = express();
 const server = createServer(app);
@@ -19,20 +22,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
 // Configurar Handlebars
-app.engine("handlebars", engine());
+app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "/views"));
-
+app.set('views', __dirname + '/views');
+app.set('public', __dirname + '/public');
 app.use(methodOverride('_method'));
 
 // Rutas
-app.use('/', viewsRouter);
-app.use('/products', productRouterDB)
+app.use('/', viewsRouterDB);
+app.use('/products', productsRouterDB)
 
 // ruta para volver al inicio
 app.get('/inicio', (req, res) => {
   res.render('index');  
 });
+
+// mongoose
+const URIMongoDB = process.env.URIMONGO;
+mongoose.connect(URIMongoDB)
+    .then( () => console.log("Conexión realizada con éxito"))
+    .catch( (error) => console.error("Error en conexión: ". error));
 
 
 // Ruta para vista de productos en tiempo real

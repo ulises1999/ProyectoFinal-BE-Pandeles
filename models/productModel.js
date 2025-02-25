@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2'
 const { Schema } = mongoose;
 
 const productCollection = "product"; //Seteamos el nombre de la colección
 const productSchema = new Schema({ //Definimos el esquema para producto
-    nombre: {type: String, required: true, minlength: 3},
-    precio: {type: Number, required: true},
-    descripcion: {type: String, required: true},
-    thumbnail: {type: String}
+    name: {type: String, required: true, minlength: 3},
+    price: {type: Number, required: true},
+    description: {type: String, required: true}
 })
 
 const ProductModel = mongoose.model(productCollection, productSchema);
