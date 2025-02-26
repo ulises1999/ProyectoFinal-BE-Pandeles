@@ -5,5 +5,12 @@
     <p class="description">Descripción: {{product.description}}</p>
 </div>
 
+<form action="/carts/add/{{product._id}}" method="POST" style="display:inline;">
+    <button type="submit">Agregar al carrito</button>
+</form>
+
+<a href="/products">
+    <button>Volver a la lista de productos</button>
+</a>
 
 <a href="/" class="button">Volver al inicio</a>

@@ -7,7 +7,7 @@
         <h2>{{this.product.name}}</h2>
         <p>Precio: ${{this.product.price}}</p>
         <p>Cantidad: {{this.quantity}}</p>
-        <form action="/cart/remove/{{this.product._id}}" method="POST">
+        <form action="/carts/remove/{{this.product._id}}" method="POST">
             <button type="submit">Eliminar</button>
         </form>
     </li>
