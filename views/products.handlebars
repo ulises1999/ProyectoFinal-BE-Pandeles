@@ -2,20 +2,20 @@
 
 <form action="/products" method="GET">
     <label for="category">Categoría:</label>
-    <input type="text" name="category" id="category">
+    <input type="text" name="category" id="category" value="{{category}}">
 
     <label for="availability">Disponible:</label>
     <select name="availability" id="availability">
         <option value="">Todos</option>
-        <option value="true">Disponible</option>
-        <option value="false">No disponible</option>
+        <option value="true" {{#if (eq availability "true")}}selected{{/if}}>Disponible</option>
+        <option value="false" {{#if (eq availability "false")}}selected{{/if}}>No disponible</option>
     </select>
 
     <label for="sort">Ordenar por precio:</label>
     <select name="sort" id="sort">
         <option value="">Sin orden</option>
-        <option value="asc">Menor a Mayor</option>
-        <option value="desc">Mayor a Menor</option>
+        <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Menor a Mayor</option>
+        <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Mayor a Menor</option>
     </select>
 
     <button type="submit">Buscar</button>
@@ -25,11 +25,11 @@
     {{#each products}}
         <li>
             <strong>{{this.name}}</strong> - ${{this.price}} - {{this.category}} - 
-            {{#if this.availability}}Disponible{{else}}No Disponible{{/if}} -
+            {{#if this.availability}}Disponible{{else}}No Disponible{{/if}} - 
             Stock: {{this.stock}}
             <br>
             <a href="/products/{{this._id}}">Ver detalles</a> |
-            <form action="/cart/add/{{this._id}}" method="POST" style="display:inline;">
+            <form action="/carts/add/{{this._id}}" method="POST" style="display:inline;">
                 <button type="submit">Agregar al carrito</button>
             </form>
         </li>

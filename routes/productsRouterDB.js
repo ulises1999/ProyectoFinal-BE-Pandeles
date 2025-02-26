@@ -25,7 +25,8 @@ router.get('/', async (req, res) => {
         const { category, availability, sort, page = 1, limit = 10 } = req.query;
         let filter = {};
         if (category) filter.category = category;
-        if (availability !== undefined) filter.availability = availability === 'true';
+        if (availability === 'true') filter.availability = true;
+        if (availability === 'false') filter.availability = false;
         
         let sortOption = {};
         if (sort === 'asc') sortOption.price = 1;
@@ -33,8 +34,10 @@ router.get('/', async (req, res) => {
         
         let infoPaginate = await ProductModel.paginate(filter, { limit, page, sort: sortOption });
         
-        let productObject = infoPaginate.docs.map(doc => doc.toObject());
-        res.render('products', { products: productObject, info: infoPaginate });
+        res.render('products', { 
+            products: infoPaginate.docs.map(doc => doc.toObject()), 
+            info: infoPaginate
+        });
     } catch (error) {
         return res.render('error', { error: "Error al obtener productos" });
     }

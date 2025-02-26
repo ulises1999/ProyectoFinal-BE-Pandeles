@@ -1,6 +1,5 @@
 import express from "express";
 import Cart from "../models/cartModel.js";
-import Product from "../models/productModel.js";
 
 const router = express.Router();
 
@@ -12,7 +11,6 @@ router.get("/", async (req, res) => {
     if (!cart) {
       cart = new Cart({ products: [] });
       await cart.save();
-      // console.log("New cart created:", cart);
     }
     res.render("cart", { cart: cart.toObject() });
   } catch (error) {
@@ -40,7 +38,7 @@ router.post("/add/:productId", async (req, res) => {
     }
 
     await cart.save();
-    res.redirect("/cart");
+    res.redirect("/carts");
   } catch (error) {
     console.error("Error adding product to cart:", error.message);
     res.render("error", { error: `Error adding product to cart: ${error.message}` });
@@ -54,13 +52,13 @@ router.post("/remove/:productId", async (req, res) => {
     let cart = await Cart.findOne();
 
     if (!cart) {
-      return res.redirect("/cart");
+      return res.redirect("/carts");
     }
 
     cart.products = cart.products.filter(p => p.product.toString() !== productId);
     await cart.save();
 
-    res.redirect("/cart");
+    res.redirect("/carts");
   } catch (error) {
     console.error("Error removing product from cart:", error.message);
     res.render("error", { error: `Error removing product from cart: ${error.message}` });

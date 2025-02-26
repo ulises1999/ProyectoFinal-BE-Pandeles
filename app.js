@@ -9,7 +9,7 @@ import productsRouterDB from './routes/productsRouterDB.js';
 import viewsRouterDB from './routes/viewsRouterDB.js';
 import dotenv from "dotenv";
 import methodOverride from 'method-override';
-import cartRouterDB from './routes/cartRouterDB.js'
+import cartRouterDB from './routes/cartRouterDB.js';
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,12 +22,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
+// Configuración de Handlebars con el helper eq
 app.engine("handlebars", handlebars.engine({
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,  
     allowProtoMethodsByDefault: true
+  },
+  helpers: {
+    eq: (a, b) => a === b // Helper para comparar valores
   }
 }));
+
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "/views"));
 
@@ -36,7 +41,7 @@ app.use(methodOverride('_method'));
 // Rutas
 app.use('/', viewsRouterDB);
 app.use('/products', productsRouterDB);
-app.use('/cart', cartRouterDB);
+app.use('/carts', cartRouterDB);
 
 // Ruta para volver al inicio
 app.get('/inicio', (req, res) => {
